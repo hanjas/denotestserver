@@ -1,0 +1,1 @@
+export const jwt_key : string = "my_random_key";
