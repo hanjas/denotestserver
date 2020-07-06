@@ -10,4 +10,15 @@ export default (router: Router) => {
         utils.generalCallback(ctx)(null, {}, "verifytoken success");
     });
 
+    router.post("/api/getgoogletoken", async (ctx, next) => {
+        await utils.verifyapiargs(ctx, next, ['token', 'usertype']);
+    }, async (ctx: any)=>{
+        login.getGoogleToken(ctx, utils.generalCallback(ctx));
+    });
+
+    router.post('/api/getalluser', async (ctx: Context) => {
+        ctx.response.body = await login.getUsers();
+        // login.getUsers2(utils.generalCallback(ctx));
+    })
+
 };

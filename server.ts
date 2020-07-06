@@ -13,8 +13,14 @@ app.use(async (ctx, next) => {
     await next();
 });
 
-await import('./app/login/loginRoutes.ts').then(a => { a.default(router) });
-await import('./app/user/userRoutes.ts').then(a => { a.default(router) });
+// await import('./app/login/loginRoutes.ts').then(a => {
+//     console.log(a);
+//     a.default(router)
+// });
+// await import('./app/user/userRoutes.ts').then(a => { a.default(router) });
+
+import loginRoutes from './app/login/loginRoutes.ts';
+loginRoutes(router);
 
 app.use(router.routes());
 app.use(router.allowedMethods());
