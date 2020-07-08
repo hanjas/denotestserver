@@ -77,11 +77,11 @@ const createGoogleUserHelper = async (name: string, email: string, usertype: str
 
     try {
         const result = await mysql.execute(query, params);
-    } catch(err) {
-        console.log(err);
-    } finally {
         const user = await getUserByEmail(email);
         await generateToken(user[0], callback);
+    } catch(err) {
+        console.log("Error", err);
+        return await callback(err, null, "create user failed");
     }
 };
 
