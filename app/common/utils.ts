@@ -39,8 +39,9 @@ const verifyapiargs = async (ctx: any, next: any, reqkeys: string[]) => {
     let isallkeys = await checkallkeys(value, reqkeys);
     if(!isallkeys[0])
         failReply('MISSING_API_ARGUMENTS', "key not found : " + isallkeys[1], ctx);
-    else
-        next()
+    else {
+        return next()
+    }
 };
 
 const utils = {
