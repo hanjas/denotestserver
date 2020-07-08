@@ -70,14 +70,19 @@ let generateToken = async (userinfo: any, callback: any) => {
     return callback(null, {token, userinfo}, "get google token success");
 }
 
-const createGoogleUser = async (name: string, email: string, usertype: string, meta: string, callback: any) => {
+const createGoogleUserHelper = async (name: string, email: string, usertype: string, meta: string, callback: any) => {
     const query = `INSERT INTO users(name, email, usertype, meta, createdat) VALUES(?,?,?,?,?)`;
     let currtime = new Date().getTime();
     const params = [name, email, usertype, meta, currtime];
-    const result = await mysql.execute(query, params);
-    const user = await getUserByEmail(email);
 
-    await generateToken(user[0], callback);
+    try {
+        const result = await mysql.execute(query, params);
+    } catch(err) {
+        console.log(err);
+    } finally {
+        const user = await getUserByEmail(email);
+        await generateToken(user[0], callback);
+    }
 };
 
 let checkAndGetGUserToken = async (tokenData: any, usertype: string, callback: any) => {
@@ -86,7 +91,8 @@ let checkAndGetGUserToken = async (tokenData: any, usertype: string, callback: a
     if (user && user.length) {
         await generateToken(user[0], callback);
     } else {
-        await createGoogleUser(tokenData.name, tokenData.email, usertype, "{}", callback);
+        return callback("Token failure", null, "user not exist");
+        // await createGoogleUser(tokenData.name, tokenData.email, usertype, "{}", callback);
     }
 };
 
@@ -102,8 +108,16 @@ let getGoogleToken = async (ctx: Context, callback: any) => {
     }
 };
 
+let createGoogleUser = async (ctx: Context, callback: any) => {
+    const {value} = await ctx.request.body();
+    const {token, usertype} = value;
+    const tokenData:any = await parseAndDecode(token).payload;
+    await createGoogleUserHelper(tokenData.name, tokenData.email, usertype, "{}", callback);
+};
+
 export const login = {
     getToken,
     verifyToken,
-    getGoogleToken
+    getGoogleToken,
+    createGoogleUser
 };

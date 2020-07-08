@@ -11,9 +11,15 @@ export default (router: Router) => {
     });
 
     router.post("/api/getgoogletoken", async (ctx: Context, next: any) => {
-        await utils.verifyapiargs(ctx, next, ['token', 'usertype']);
+        await utils.verifyapiargs(ctx, next, ['token']);
     }, async (ctx: Context)=>{
         await login.getGoogleToken(ctx, utils.generalCallback(ctx));
+    });
+
+    router.post("/api/creategoogleuser", async (ctx: Context, next: any) => {
+        await utils.verifyapiargs(ctx, next, ['token', 'usertype']);
+    }, async (ctx: Context)=>{
+        await login.createGoogleUser(ctx, utils.generalCallback(ctx));
     });
 
 };
