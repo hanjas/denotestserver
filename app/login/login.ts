@@ -39,7 +39,9 @@ const verifyToken = async (ctx: Context, next: any) => {
     }
 
     const token = value.token;
-    if ( await validateJwt(token, jwt_key) ) {
+    let tokend: any = await validateJwt(token, jwt_key);
+    if ( tokend.isValid == true ) {
+        await ctx.request.headers.set('tokend', JSON.stringify(tokend.payload));
         await next();
     } else {
         return utils.authFailure('Failed to authenticate the token', ctx);
@@ -63,7 +65,7 @@ let generateToken = async (userinfo: any, callback: any) => {
 
     const payload: Payload = {
         "userinfo": userinfo,
-        exp: setExpiration(new Date().getTime() + 60000),
+        exp: setExpiration(new Date().getTime() + 86400*1000*1),
     };
     const token: String = await makeJwt({ "key": jwt_key, header, payload });
     

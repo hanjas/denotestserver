@@ -6,7 +6,7 @@ import { port } from "./app/config/appconfig.ts";
 const app = new Application();
 const router = new Router();
 
-app.use(oakCors({origin:"*"}));
+await app.use(await oakCors({origin:"*"}));
 app.use(async (ctx, next) => {
     const {value} = await ctx.request.body();
     console.log(`${ctx.request.method} ${ctx.request.url} ${JSON.stringify(value)}`);
@@ -21,6 +21,8 @@ app.use(async (ctx, next) => {
 
 import loginRoutes from './app/login/loginRoutes.ts';
 loginRoutes(router);
+import userRoutes from './app/user/userRoutes.ts';
+userRoutes(router);
 
 app.use(router.routes());
 app.use(router.allowedMethods());

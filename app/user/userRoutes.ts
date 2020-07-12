@@ -21,4 +21,8 @@ export default (router: Router) => {
         user.addUser(ctx, utils.generalCallback(ctx))
     });
 
+    router.post("/api/user/delete", login.verifyToken, async (ctx: Context) => {
+        await user.deleteUser(ctx, utils.generalCallback(ctx))
+    });
+
 };
